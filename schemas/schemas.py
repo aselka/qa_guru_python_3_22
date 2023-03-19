@@ -1,30 +1,39 @@
 from voluptuous import Schema, PREVENT_EXTRA
 
-create_single_user = Schema(
+create_user = Schema(
     {
         "name": str,
         "job": str,
         "id": str,
         "createdAt": str
     },
-    extra=PREVENT_EXTRA,
-    required=True
+    required=True,
+    extra=PREVENT_EXTRA
 )
 
-update_single_user = Schema(
+create_update_user = Schema(
     {
         "name": str,
         "job": str,
         "updatedAt": str
     },
-    extra=PREVENT_EXTRA,
-    required=True
+    required=True,
+    extra=PREVENT_EXTRA
 )
 
-login_successfully = Schema(
+register_user = Schema(
     {
+        "id": int,
         "token": str
     },
-    extra=PREVENT_EXTRA,
-    required=True
+    required=True,
+    extra=PREVENT_EXTRA
+)
+
+unregister_user = Schema(
+    {
+        "error": str
+    },
+    required=True,
+    extra=PREVENT_EXTRA
 )

@@ -1,44 +1,43 @@
 from pytest_voluptuous import S
-
-import schemas.schemas
-from utils.base_session import regres
+from schemas.schemas import *
 
 
-def test_create_user():
-    create_user = regres.post("/users", {"name": "Asel", "job": "QA"})
+def test_create_user(reqres):
+    created_user = reqres.post("api/users", {"name": "Asel", "job": "QA"})
 
-    assert create_user.status_code == 201
-    assert create_user.json()["name"] == "Asel"
-    assert create_user.json()["job"] == "QA"
-    assert S(schemas.schemas.create_single_user) == create_user.json()
+    assert created_user.status_code == 201
+    assert S(create_user) == created_user.json()
+    assert created_user.json()["name"] == "Asel"
+    assert created_user.json()["job"] == "QA"
 
 
-def test_update_user():
-    update_user = regres.put("/users/2", {"name": "bisengalieva", "job": "tester"})
+def test_update_user(reqres):
+    update_user = reqres.put("api/users/2", {"name": "bisengalieva", "job": "tester"})
 
     assert update_user.status_code == 200
+    assert S(create_update_user) == update_user.json()
     assert update_user.json()["name"] == "bisengalieva"
     assert update_user.json()["job"] == "tester"
-    assert update_user.json()["updatedAt"] is not None
-    assert S(schemas.schemas.update_single_user) == update_user.json()
 
 
-def test_delete_user():
-    delete_user = regres.delete("/users/2")
+def test_delete_user(reqres):
+    delete_user = reqres.delete("api/users/2")
 
     assert delete_user.status_code == 204
 
 
-def test_login_successful():
-    login_successfully = regres.post("/login", {"email": "eve.holt@reqres.in", "password": "pistol"})
+def test_login_successful(reqres):
+    login_successfully = reqres.post("api/register", {"email": "eve.holt@reqres.in", "password": "pistol"})
 
     assert login_successfully.status_code == 200
-    assert login_successfully.json()["token"] is not None
-    assert S(schemas.schemas.login_successfully) == login_successfully.json()
+    assert S(register_user) == login_successfully.json()
+    assert login_successfully.json()['id']
+    assert login_successfully.json()["token"]
 
 
-def test_login_unsuccessful():
-    login_unsuccessful = regres.post("/login", {"email": "neit.@f"})
+def test_login_unsuccessful(reqres):
+    login_unsuccessful = reqres.post("api/register", {"email": "neit.@f"})
 
     assert login_unsuccessful.status_code == 400
+    assert S(unregister_user) == login_unsuccessful.json()
     assert len(login_unsuccessful.content) != 0

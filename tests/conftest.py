@@ -14,8 +14,12 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='session')
-def demoshop(request):
-    env = request.config.getoption("--env")
+def env(request):
+    return request.config.getoption("--env")
+
+
+@pytest.fixture(scope='session')
+def demoshop(env):
     return DemoQaWithEnv(env)
 
 
@@ -38,6 +42,5 @@ def app(demoshop, cookie):
 
 
 @pytest.fixture(scope='session')
-def reqres(request):
-    env = request.config.getoption("--env")
-    return DemoQaWithEnv(env).session_reqres
+def reqres(env):
+    return DemoQaWithEnv(env).reqres
